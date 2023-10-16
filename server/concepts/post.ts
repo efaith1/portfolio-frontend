@@ -4,19 +4,19 @@ import DocCollection, { BaseDoc } from "../framework/doc";
 import { NotAllowedError, NotFoundError } from "./errors";
 
 export interface PostOptions {
-  backgroundColor?: string;
+  backgroundColor?: String;
 }
 
 export interface PostDoc extends BaseDoc {
   author: ObjectId;
-  content: string;
+  content: String;
   options?: PostOptions;
 }
 
 export default class PostConcept {
   public readonly posts = new DocCollection<PostDoc>("posts");
 
-  async create(author: ObjectId, content: string, options?: PostOptions) {
+  async create(author: ObjectId, content: String, options?: PostOptions) {
     const _id = await this.posts.createOne({ author, content, options });
     return { msg: "Post successfully created!", post: await this.posts.readOne({ _id }) };
   }
@@ -30,6 +30,14 @@ export default class PostConcept {
 
   async getByAuthor(author: ObjectId) {
     return await this.getPosts({ author });
+  }
+
+  async getPostById(_id: ObjectId) {
+    const post = await this.posts.readOne({ _id });
+    if (!post) {
+      throw new NotFoundError(`ID you provided matches post not found!`);
+    }
+    return post;
   }
 
   async update(_id: ObjectId, update: Partial<PostDoc>) {

@@ -1,6 +1,8 @@
 import { User } from "./app";
 import { AlreadyFriendsError, FriendNotFoundError, FriendRequestAlreadyExistsError, FriendRequestDoc, FriendRequestNotFoundError } from "./concepts/friend";
+import { NotificationAuthorNotMatchError, NotificationDoc } from "./concepts/notification";
 import { PostAuthorNotMatchError, PostDoc } from "./concepts/post";
+import { ReactionAuthorNotMatchError, ReactionDoc } from "./concepts/reaction";
 import { Router } from "./framework/router";
 
 /**
@@ -37,6 +39,44 @@ export default class Responses {
     const usernames = await User.idsToUsernames(from.concat(to));
     return requests.map((request, i) => ({ ...request, from: usernames[i], to: usernames[i + requests.length] }));
   }
+
+  /**
+   * Convert NotificationDoc into more readable format for the frontend by converting the author id into a username.
+   */
+  static async notification(notification: NotificationDoc | null) {
+    if (!notification) {
+      return notification;
+    }
+    const author = await User.getUserById(notification.recipient);
+    return { ...notification, author: author.username };
+  }
+
+  /**
+   * Same as {@link notification} but for an array of NotificationDoc for improved performance.
+   */
+  static async notifications(notifications: NotificationDoc[]) {
+    const authors = await User.idsToUsernames(notifications.map((notification) => notification.recipient));
+    return notifications.map((notification, i) => ({ ...notification, author: authors[i] }));
+  }
+
+  /**
+   * Convert ReactionDoc into more readable format for the frontend by converting the author id into a username.
+   */
+  static async reaction(reaction: ReactionDoc | null) {
+    if (!reaction) {
+      return reaction;
+    }
+    const author = await User.getUserById(reaction.author);
+    return { ...reaction, author: author.username };
+  }
+
+  /**
+   * Same as {@link reaction} but for an array of ReactionDoc for improved performance.
+   */
+  static async reactions(reactions: ReactionDoc[]) {
+    const authors = await User.idsToUsernames(reactions.map((reaction) => reaction.author));
+    return reactions.map((reaction, i) => ({ ...reaction, author: authors[i] }));
+  }
 }
 
 Router.registerError(PostAuthorNotMatchError, async (e) => {
@@ -61,5 +101,15 @@ Router.registerError(FriendRequestNotFoundError, async (e) => {
 
 Router.registerError(AlreadyFriendsError, async (e) => {
   const [user1, user2] = await Promise.all([User.getUserById(e.user1), User.getUserById(e.user2)]);
+  return e.formatWith(user1.username, user2.username);
+});
+
+Router.registerError(NotificationAuthorNotMatchError, async (e) => {
+  const [user1, user2] = await Promise.all([User.getUserById(e.author), User.getUserById(e.author)]);
+  return e.formatWith(user1.username, user2.username);
+});
+
+Router.registerError(ReactionAuthorNotMatchError, async (e) => {
+  const [user1, user2] = await Promise.all([User.getUserById(e.author), User.getUserById(e.author)]);
   return e.formatWith(user1.username, user2.username);
 });

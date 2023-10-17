@@ -2,9 +2,14 @@ import { storeToRefs } from "pinia";
 import { createRouter, createWebHistory } from "vue-router";
 
 import { useUserStore } from "@/stores/user";
+import CannotLoginViewVue from "../views/CannotLoginView.vue";
 import HomeView from "../views/HomeView.vue";
+import LikedViewVue from "../views/LikedView.vue";
+import LimitViewVue from "../views/LimitView.vue";
 import LoginView from "../views/LoginView.vue";
+import MyPostsViewVue from "../views/MyPostsView.vue";
 import NotFoundView from "../views/NotFoundView.vue";
+import NotificationViewVue from "../views/NotificationView.vue";
 import SettingView from "../views/SettingView.vue";
 
 const router = createRouter({
@@ -22,9 +27,51 @@ const router = createRouter({
       meta: { requiresAuth: true },
     },
     {
+      path: "/myPost",
+      name: "MyPosts",
+      component: MyPostsViewVue,
+      meta: { requiresAuth: true },
+    },
+    {
+      path: "/likedPost",
+      name: "LikedPosts",
+      component: LikedViewVue,
+      meta: { requiresAuth: true },
+    },
+    {
+      path: "/notification",
+      name: "Notifications",
+      component: NotificationViewVue,
+      meta: { requiresAuth: true },
+    },
+    {
       path: "/login",
       name: "Login",
       component: LoginView,
+      meta: { requiresAuth: false },
+      beforeEnter: (to, from) => {
+        const { isLoggedIn } = storeToRefs(useUserStore());
+        if (isLoggedIn.value) {
+          return { name: "Settings" };
+        }
+      },
+    },
+    {
+      path: "/limit",
+      name: "Limit",
+      component: LimitViewVue,
+      meta: { requiresAuth: false },
+      beforeEnter: (to, from) => {
+        const { isLoggedIn } = storeToRefs(useUserStore());
+        if (isLoggedIn.value) {
+          return { name: "Settings" };
+        }
+      },
+    },
+    {
+      path: "/cannotLogin",
+      name: "CannotLogin",
+      component: CannotLoginViewVue,
       meta: { requiresAuth: false },
       beforeEnter: (to, from) => {
         const { isLoggedIn } = storeToRefs(useUserStore());

@@ -10,8 +10,8 @@ const { isLoggedIn } = storeToRefs(useUserStore());
 <template>
   <div class="react">
     <section v-if="isLoggedIn">
-      <CreateUpvote @createUpvote="createUpvote" />
-      <CreateDownvote @createDownvote="createDownvote" />
+      <CreateUpvote />
+      <CreateDownvote />
     </section>
   </div>
   <div class="count">

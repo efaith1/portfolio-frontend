@@ -3,6 +3,7 @@ import CreateDownvote from "@/components/Reaction/CreateDownvote.vue";
 import CreateUpvote from "@/components/Reaction/CreateUpvote.vue";
 import { useUserStore } from "@/stores/user";
 import { storeToRefs } from "pinia";
+import ReactionCount from "./ReactionCount.vue";
 
 const { isLoggedIn } = storeToRefs(useUserStore());
 </script>
@@ -15,7 +16,6 @@ const { isLoggedIn } = storeToRefs(useUserStore());
     </section>
   </div>
   <div class="count">
-    <h2>Upvotes:</h2>
     <ReactionCount />
   </div>
 </template>
@@ -23,12 +23,14 @@ const { isLoggedIn } = storeToRefs(useUserStore());
 <style scoped>
 .react {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  justify-content: flex-start;
+  align-items: flex-end;
 }
 .count {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  justify-content: flex-end;
+  align-items: flex-end;
+  background-color: rgb(131, 183, 241);
+  border-radius: 5px;
 }
 </style>

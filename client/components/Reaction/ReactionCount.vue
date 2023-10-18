@@ -2,13 +2,11 @@
 import { onMounted, ref } from "vue";
 import { fetchy } from "../../utils/fetchy";
 
-const postId = ref("");
-
 const reactionCount = ref(0);
 
 const getReactionCount = async () => {
   try {
-    const response = await fetchy(`/reactions?target=${postId.value}`, "GET");
+    const response = await fetchy("/api/reactions", "GET");
     if (response && response.count) {
       reactionCount.value = response.count;
     }
@@ -21,3 +19,9 @@ onMounted(async () => {
   await getReactionCount();
 });
 </script>
+
+<template>
+  <div>
+    <p>Reaction Count: {{ reactionCount }}</p>
+  </div>
+</template>

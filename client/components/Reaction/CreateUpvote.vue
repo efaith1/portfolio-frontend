@@ -1,23 +1,19 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { fetchy } from "../../utils/fetchy";
-
-const _id = ref("");
-const emit = defineEmits(["createUpvote"]);
-
 const createUpvote = async () => {
   try {
-    await fetchy(`/reactions/${_id.value}`, "POST");
+    await fetchy(`/api/reactions/${props.post._id}`, "POST");
   } catch (_) {
     return;
   }
-  emit("createUpvote");
+  // emit("createUpvote");
 };
 </script>
 
 <template>
   <form @submit.prevent="createUpvote">
-    <label for="_id">Upvote</label>
+    <button type="submit" class="pure-button-primary pure-button">Upvote</button>
   </form>
 </template>
 
@@ -26,7 +22,7 @@ form {
   background-color: var(--base-bg);
   border-radius: 1em;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   gap: 0.5em;
   padding: 1em;
 }
@@ -38,17 +34,5 @@ textarea {
   padding: 0.5em;
   border-radius: 4px;
   resize: none;
-}
-
-.thumbs-up {
-  color: #007bff; /* Set the color of the thumbs up icon */
-  font-size: 24px; /* Adjust the size as needed */
-  cursor: pointer; /* Add a pointer cursor for interaction */
-  margin: 0.5em 0; /* Adjust the margin as needed */
-}
-
-/* Style the thumbs-up icon on hover */
-.thumbs-up:hover {
-  color: #0056b3; /* Change the color on hover */
 }
 </style>

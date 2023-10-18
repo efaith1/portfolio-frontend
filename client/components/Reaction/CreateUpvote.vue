@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { fetchy } from "../../utils/fetchy";
+const _id = ref("");
+
 const createUpvote = async () => {
   try {
-    await fetchy(`/api/reactions/${props.post._id}`, "POST");
+    await fetchy(`/api/reactions/${id._id}`, "POST");
   } catch (_) {
     return;
   }

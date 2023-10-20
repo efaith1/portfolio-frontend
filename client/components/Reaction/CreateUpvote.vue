@@ -1,40 +1,32 @@
 <script setup lang="ts">
-import { ref } from "vue";
 import { fetchy } from "../../utils/fetchy";
-const _id = ref("");
+
+const props = defineProps(["post"]);
+const emit = defineEmits(["upvote"]);
 
 const createUpvote = async () => {
   try {
-    await fetchy(`/api/reactions/${id._id}`, "POST");
-  } catch (_) {
+    await fetchy(`/api/reactions/${props.post._id}`, "POST");
+  } catch (e) {
     return;
   }
-  // emit("createUpvote");
+  emit("upvote");
 };
 </script>
 
 <template>
-  <form @submit.prevent="createUpvote">
-    <button type="submit" class="pure-button-primary pure-button">Upvote</button>
-  </form>
+  <div class="upvote">
+    <button type="submit" class="pure-button-primary pure-button" @click="createUpvote">Upvote</button>
+  </div>
 </template>
 
 <style scoped>
-form {
+.upvote {
   background-color: var(--base-bg);
   border-radius: 1em;
   display: flex;
   flex-direction: row;
   gap: 0.5em;
   padding: 1em;
-}
-
-textarea {
-  font-family: inherit;
-  font-size: inherit;
-  height: 6em;
-  padding: 0.5em;
-  border-radius: 4px;
-  resize: none;
 }
 </style>

@@ -1,40 +1,32 @@
 <script setup lang="ts">
-import { ref } from "vue";
 import { fetchy } from "../../utils/fetchy";
-const _id = ref("");
+
+const props = defineProps(["post"]);
+const emit = defineEmits(["downvote"]);
 
 const createDownvote = async () => {
   try {
-    await fetchy(`/api/reactions/${id._id}`, "DELETE");
-  } catch (_) {
+    await fetchy(`/api/reactions/${props.post._id}`, "DELETE");
+  } catch (e) {
     return;
   }
-  // emit("createDownvote");
+  emit("downvote");
 };
 </script>
 
 <template>
-  <form @submit.prevent="createDownvote">
-    <button type="submit" class="pure-button-primary pure-button">Downvote</button>
-  </form>
+  <div class="downvote">
+    <button type="submit" class="pure-button-primary pure-button" @click="createDownvote">Downvote</button>
+  </div>
 </template>
 
 <style scoped>
-form {
+.downvote {
   background-color: var(--base-bg);
   border-radius: 1em;
   display: flex;
   flex-direction: row;
   gap: 0.5em;
   padding: 1em;
-}
-
-textarea {
-  font-family: inherit;
-  font-size: inherit;
-  height: 6em;
-  padding: 0.5em;
-  border-radius: 4px;
-  resize: none;
 }
 </style>

@@ -27,7 +27,7 @@ onBeforeMount(async () => {
       <div class="title">
         <img src="@/assets/images/logo.svg" />
         <RouterLink :to="{ name: 'Home' }">
-          <h1>Social Media App</h1>
+          <h1>ProductiVerse</h1>
         </RouterLink>
       </div>
       <ul>
@@ -35,15 +35,20 @@ onBeforeMount(async () => {
           <RouterLink :to="{ name: 'Home' }" :class="{ underline: currentRouteName == 'Home' }"> Home </RouterLink>
         </li>
         <li v-if="isLoggedIn">
-          <RouterLink :to="{ name: 'MyPosts' }" :class="{ underline: currentRouteName == 'MyPosts' }"> My Posts </RouterLink>
-          <RouterLink :to="{ name: 'LikedPosts' }" :class="{ underline: currentRouteName == 'LikedPosts' }"> Liked Posts </RouterLink>
+          <RouterLink :to="{ name: 'MyPosts' }" :class="{ underline: currentRouteName == 'MyPosts' }"> Posts </RouterLink>
+        </li>
+
+        <li v-if="isLoggedIn">
+          <RouterLink :to="{ name: 'LikedPosts' }" :class="{ underline: currentRouteName == 'LikedPosts' }"> Liked </RouterLink>
+        </li>
+        <li v-if="isLoggedIn">
           <RouterLink :to="{ name: 'Notifications' }" :class="{ underline: currentRouteName == 'Notifications' }"> Notifications </RouterLink>
+        </li>
+        <li v-if="isLoggedIn">
           <RouterLink :to="{ name: 'Settings' }" :class="{ underline: currentRouteName == 'Settings' }"> Settings </RouterLink>
         </li>
         <li v-else>
           <RouterLink :to="{ name: 'Login' }" :class="{ underline: currentRouteName == 'Login' }"> Login </RouterLink>
-          <RouterLink :to="{ name: 'Limit' }" :class="{ underline: currentRouteName == 'Limit' }"> Set Login Limit </RouterLink>
-          <RouterLink :to="{ name: 'CannotLogin' }" :class="{ underline: currentRouteName == 'CannotLogin' }"> Cannot Login </RouterLink>
         </li>
       </ul>
     </nav>

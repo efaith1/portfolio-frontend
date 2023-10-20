@@ -2,35 +2,47 @@
 import CreateDownvote from "@/components/Reaction/CreateDownvote.vue";
 import CreateUpvote from "@/components/Reaction/CreateUpvote.vue";
 import { useUserStore } from "@/stores/user";
+import { fetchy } from "@/utils/fetchy";
 import { storeToRefs } from "pinia";
-import ReactionCount from "./ReactionCount.vue";
+import { ref } from "vue";
 
 const { isLoggedIn } = storeToRefs(useUserStore());
+
+const reactionCount = ref(0);
+
+const getReactionCount = async () => {
+  try {
+    const response = await fetchy("/api/reactions", "GET");
+    if (response && response.count) {
+      reactionCount.value = response.count;
+    }
+  } catch (error) {
+    console.error("Error fetching reaction count:", error);
+  }
+};
 </script>
 
 <template>
   <div class="react">
-    <section v-if="isLoggedIn">
-      <CreateUpvote />
-      <CreateDownvote />
-    </section>
+    <div v-if="isLoggedIn">
+      <CreateUpvote @upvote="getReactionCount" />
+      <CreateDownvote @downvote="getReactionCount" />
+    </div>
   </div>
   <div class="count">
-    <ReactionCount />
+    <div>
+      <p>Reaction Count: {{ reactionCount }}</p>
+    </div>
   </div>
 </template>
 
 <style scoped>
 .react {
   display: flex;
-  justify-content: flex-start;
-  align-items: flex-end;
+  flex-direction: row;
 }
 .count {
+  padding-top: 100px;
   display: flex;
-  justify-content: flex-end;
-  align-items: flex-end;
-  background-color: rgb(131, 183, 241);
-  border-radius: 5px;
 }
 </style>

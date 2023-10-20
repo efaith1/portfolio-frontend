@@ -2,38 +2,41 @@
 import { onBeforeMount, ref } from "vue";
 import { fetchy } from "../../utils/fetchy";
 
+const emit = defineEmits(["refreshNotifications"]);
 const loaded = ref(false);
 let notifications = ref<Array<Record<string, string>>>([]);
 let searchRecipient = ref("");
 
-async function getUnread(recipient?: string) {
+async function clearNotifications(recipient?: string) {
   let query: Record<string, string> = recipient !== undefined ? { recipient } : {};
-  let unreadResults;
+  let clearResults;
   try {
-    unreadResults = await fetchy("/api/notifications/unread", "GET", { query });
-  } catch (_) {
+    await fetchy("/api/notifications/clear", "DELETE", { query });
+  } catch (e) {
     return;
   }
   searchRecipient.value = recipient ? recipient : "";
-  notifications.value = unreadResults;
+  notifications.value = clearResults;
+  emit("refreshNotifications");
 }
 
 onBeforeMount(async () => {
-  await getUnread();
+  await clearNotifications();
   loaded.value = true;
 });
 </script>
 
 <template>
-  <div class="row">
+  <div class="base">
     <h2 v-if="!searchRecipient">Notifications:</h2>
-    <button v-else class="button-error btn-small pure-button" @click="getUnread(searchRecipient)">List Unread Notifications</button>
+    <button class="button-error btn-small pure-button" @click="clearNotifications(searchRecipient)">Clear Notifications</button>
   </div>
 </template>
 
 <style scoped>
-.row {
-  margin: 0 auto;
-  max-width: 60em;
+.base {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 </style>

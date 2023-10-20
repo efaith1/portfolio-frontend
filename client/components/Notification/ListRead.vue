@@ -1,10 +1,6 @@
 <script setup lang="ts">
-import { storeToRefs } from "pinia";
 import { onBeforeMount, ref } from "vue";
-import { useUserStore } from "../../stores/user";
 import { fetchy } from "../../utils/fetchy";
-
-const { isLoggedIn } = storeToRefs(useUserStore());
 
 const loaded = ref(false);
 let notifications = ref<Array<Record<string, string>>>([]);
@@ -31,8 +27,7 @@ onBeforeMount(async () => {
 <template>
   <div class="row">
     <h2 v-if="!searchRecipient">Notifications:</h2>
-    <h2 v-else>Read by {{ searchRecipient }}:</h2>
-    <SearchPostForm @getPostsByAuthor="getRead" />
+    <button v-else class="button-error btn-small pure-button" @click="getRead(searchRecipient)">List Read Notifications</button>
   </div>
 </template>
 

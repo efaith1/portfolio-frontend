@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import ReactionComponent from "@/components/Reaction/ReactionComponent.vue";
 import { useUserStore } from "@/stores/user";
 import { formatDate } from "@/utils/formatDate";
 import { storeToRefs } from "pinia";
@@ -31,7 +30,6 @@ const deletePost = async () => {
       <p v-if="props.post.dateCreated !== props.post.dateUpdated">Edited on: {{ formatDate(props.post.dateUpdated) }}</p>
       <p v-else>Created on: {{ formatDate(props.post.dateCreated) }}</p>
     </article>
-    <ReactionComponent />
   </div>
 </template>
 

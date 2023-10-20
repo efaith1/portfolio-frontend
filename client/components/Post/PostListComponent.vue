@@ -2,6 +2,9 @@
 import CreatePostForm from "@/components/Post/CreatePostForm.vue";
 import EditPostForm from "@/components/Post/EditPostForm.vue";
 import PostComponent from "@/components/Post/PostComponent.vue";
+import CreateDownvote from "@/components/Reaction/CreateDownvote.vue";
+import CreateUpvote from "@/components/Reaction/CreateUpvote.vue";
+import ReactionComponent from "@/components/Reaction/ReactionComponent.vue";
 import { useUserStore } from "@/stores/user";
 import { fetchy } from "@/utils/fetchy";
 import { storeToRefs } from "pinia";
@@ -47,10 +50,14 @@ onBeforeMount(async () => {
     <h2 v-else>Posts by {{ searchAuthor }}:</h2>
     <SearchPostForm @getPostsByAuthor="getPosts" />
   </div>
+  <!-- should look into making this entire thing only if is logged in -->
   <section class="posts" v-if="loaded && posts.length !== 0">
     <article v-for="post in posts" :key="post._id">
       <PostComponent v-if="editing !== post._id" :post="post" @refreshPosts="getPosts" @editPost="updateEditing" />
       <EditPostForm v-else :post="post" @refreshPosts="getPosts" @editPost="updateEditing" />
+      <CreateUpvote :post="post" />
+      <CreateDownvote :post="post" />
+      <ReactionComponent :post="post" />
     </article>
   </section>
   <p v-else-if="loaded">No posts found</p>

@@ -50,7 +50,7 @@ onBeforeMount(async () => {
     <h2 v-else>Posts by {{ searchAuthor }}:</h2>
     <SearchPostForm @getPostsByAuthor="getPosts" />
   </div>
-  <!-- should look into making this entire thing only if is logged in -->
+  <!-- TODO should look into making this entire thing only if is logged in -->
   <section class="posts" v-if="loaded && posts.length !== 0">
     <article v-for="post in posts" :key="post._id">
       <PostComponent v-if="editing !== post._id" :post="post" @refreshPosts="getPosts" @editPost="updateEditing" />

@@ -6,16 +6,16 @@ import MarkRead from "@/components/Notification/MarkRead.vue";
 import MarkUnread from "@/components/Notification/MarkUnread.vue";
 import DeleteNotification from "@/components/Notification/DeleteNotification.vue";
 import ClearNotifications from "@/components/Notification/ClearNotifications.vue";
-import SubscribeNotifications from "@/components/Notification/SubscribeNotifications.vue";
-import UnsubscribeNotifications from "@/components/Notification/UnsubscribeNotifications.vue";
 import { useUserStore } from "@/stores/user";
 import { storeToRefs } from "pinia";
+import SubscribeNotifications from "./SubscribeNotifications.vue";
+import UnsubscribeNotifications from "./UnsubscribeNotifications.vue";
 
 const { isLoggedIn } = storeToRefs(useUserStore());
 
 const loaded = ref(false);
 let notifications = ref<Array<Record<string, string>>>([]);
-let searchAuthor = ref("");
+let searchRecipient = ref("");
 
 async function getNotifications(author?: string) {
   let query: Record<string, string> = author !== undefined ? { author } : {};
@@ -25,7 +25,7 @@ async function getNotifications(author?: string) {
   } catch (_) {
     return;
   }
-  searchAuthor.value = author ? author : "";
+  searchRecipient.value = author ? author : "";
   notifications.value = notificationsResults;
 }
 
@@ -38,7 +38,7 @@ onBeforeMount(async () => {
 <template>
   <section v-if="isLoggedIn">
     <h2>Create a notification:</h2>
-    <CreateNotification @refreshNotifications="getNotifications" />
+    <CreateNotification @refreshNotifications="getNotifications(searchRecipient)" />
   </section>
   <!-- TODO should look into making this entire thing only if is logged in -->
   <section class="notifications" v-if="loaded && notifications.length !== 0">

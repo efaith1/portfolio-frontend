@@ -4,7 +4,7 @@ import { fetchy } from "../../utils/fetchy";
 
 const loaded = ref(false);
 let notifications = ref<Array<Record<string, string>>>([]);
-let searchRecipient = ref("");
+let notifRecipient = ref("");
 
 async function getRead(recipient?: string) {
   let query: Record<string, string> = recipient !== undefined ? { recipient } : {};
@@ -14,7 +14,7 @@ async function getRead(recipient?: string) {
   } catch (_) {
     return;
   }
-  searchRecipient.value = recipient ? recipient : "";
+  notifRecipient.value = recipient ? recipient : "";
   notifications.value = readResults;
 }
 
@@ -26,8 +26,8 @@ onBeforeMount(async () => {
 
 <template>
   <div class="row">
-    <h2 v-if="!searchRecipient">No author to listRead:</h2>
-    <button v-else class="button-error btn-small pure-button" @click="getRead(searchRecipient)">List Read Notifications</button>
+    <h2 v-if="!notifRecipient">No author to listRead:</h2>
+    <button v-else class="button-error btn-small pure-button" @click="getRead(notifRecipient)">List Read Notifications</button>
   </div>
 </template>
 

@@ -26,7 +26,7 @@ onBeforeMount(async () => {
 
 <template>
   <div class="row">
-    <h2 v-if="!searchRecipient">Notifications:</h2>
+    <h2 v-if="!searchRecipient">No author to listUnread:</h2>
     <button v-else class="button-error btn-small pure-button" @click="getUnread(searchRecipient)">List Unread Notifications</button>
   </div>
 </template>

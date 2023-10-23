@@ -4,19 +4,16 @@ import { fetchy } from "../../utils/fetchy";
 
 const emit = defineEmits(["refreshNotifications"]);
 const loaded = ref(false);
-let notifications = ref<Array<Record<string, string>>>([]);
 let searchRecipient = ref("");
 
 async function clearNotifications(recipient?: string) {
   let query: Record<string, string> = recipient !== undefined ? { recipient } : {};
-  let clearResults;
   try {
     await fetchy("/api/notifications/clear", "DELETE", { query });
   } catch (e) {
     return;
   }
   searchRecipient.value = recipient ? recipient : "";
-  notifications.value = clearResults;
   emit("refreshNotifications");
 }
 
@@ -28,8 +25,8 @@ onBeforeMount(async () => {
 
 <template>
   <div class="base">
-    <h2 v-if="!searchRecipient">Notifications:</h2>
-    <button class="button-error btn-small pure-button" @click="clearNotifications(searchRecipient)">Clear Notifications</button>
+    <h2 v-if="!searchRecipient">No author to clear:</h2>
+    <button v-else class="button-error btn-small pure-button" @click="clearNotifications(searchRecipient)">Clear Notifications</button>
   </div>
 </template>
 

@@ -1,18 +1,14 @@
 <script setup lang="ts">
 import CreateNotification from "@/components/Notification/CreateNotification.vue";
-import ListRead from "@/components/Notification/ListRead.vue";
-import ListUnread from "@/components/Notification/ListUnread.vue";
+import DeleteNotification from "@/components/Notification/DeleteNotification.vue";
 import MarkRead from "@/components/Notification/MarkRead.vue";
 import MarkUnread from "@/components/Notification/MarkUnread.vue";
-import DeleteNotification from "@/components/Notification/DeleteNotification.vue";
-import ClearNotifications from "@/components/Notification/ClearNotifications.vue";
 import { useUserStore } from "@/stores/user";
+import { fetchy } from "@/utils/fetchy";
 import { storeToRefs } from "pinia";
-import SubscribeNotifications from "./SubscribeNotifications.vue";
-import UnsubscribeNotifications from "./UnsubscribeNotifications.vue";
+import { onBeforeMount, ref } from "vue";
 
 const { isLoggedIn } = storeToRefs(useUserStore());
-
 const loaded = ref(false);
 let notifications = ref<Array<Record<string, string>>>([]);
 let searchRecipient = ref("");
@@ -23,6 +19,7 @@ async function getNotifications(author?: string) {
   try {
     notificationsResults = await fetchy("/api/notifications/all", "GET", { query });
   } catch (_) {
+    console.error("error loading notifications", _);
     return;
   }
   searchRecipient.value = author ? author : "";
@@ -30,7 +27,7 @@ async function getNotifications(author?: string) {
 }
 
 onBeforeMount(async () => {
-  await getPosts();
+  await getNotifications();
   loaded.value = true;
 });
 </script>
@@ -43,12 +40,12 @@ onBeforeMount(async () => {
   <!-- TODO should look into making this entire thing only if is logged in -->
   <section class="notifications" v-if="loaded && notifications.length !== 0">
     <article v-for="notification in notifications" :key="notification._id">
-      <ListRead :notification="notification" />
-      <ListUnread :notification="notification" />
+      <!-- <ListRead :notification="notification" /> -->
+      <!-- <ListUnread :notification="notification" /> -->
       <MarkRead :notification="notification" />
       <MarkUnread :notification="notification" />
-      <DeleteNotification :notification="notification" />
-      <ClearNotifications :notification="notification" />
+      <DeleteNotification :notification="notification" @refreshNotifications="getNotifications(searchRecipient)" />
+      <ClearNotifications @refreshNotifications="getNotifications(searchRecipient)" />
       <SubscribeNotifications :notification="notification" />
       <UnsubscribeNotifications :notification="notification" />
     </article>

@@ -2,10 +2,10 @@ import { storeToRefs } from "pinia";
 import { createRouter, createWebHistory } from "vue-router";
 
 import { useUserStore } from "@/stores/user";
-import CannotLoginViewVue from "../views/CannotLoginView.vue";
+import CannotLoginView from "../views/CannotLoginView.vue";
 import HomeView from "../views/HomeView.vue";
 import LikedViewVue from "../views/LikedView.vue";
-import LimitViewVue from "../views/LimitView.vue";
+import LimitView from "../views/LimitView.vue";
 import LoginView from "../views/LoginView.vue";
 import MyPostsViewVue from "../views/MyPostsView.vue";
 import NotFoundView from "../views/NotFoundView.vue";
@@ -45,6 +45,16 @@ const router = createRouter({
       meta: { requiresAuth: true },
     },
     {
+      path: "/limit",
+      name: "Limit",
+      component: LimitView,
+    },
+    {
+      path: "/cannotLogin",
+      name: "CannotLogin",
+      component: CannotLoginView,
+    },
+    {
       path: "/login",
       name: "Login",
       component: LoginView,
@@ -56,30 +66,30 @@ const router = createRouter({
         }
       },
     },
-    {
-      path: "/limit",
-      name: "Limit",
-      component: LimitViewVue,
-      meta: { requiresAuth: false },
-      beforeEnter: (to, from) => {
-        const { isLoggedIn } = storeToRefs(useUserStore());
-        if (isLoggedIn.value) {
-          return { name: "Settings" };
-        }
-      },
-    },
-    {
-      path: "/cannotLogin",
-      name: "CannotLogin",
-      component: CannotLoginViewVue,
-      meta: { requiresAuth: false },
-      beforeEnter: (to, from) => {
-        const { isLoggedIn } = storeToRefs(useUserStore());
-        if (isLoggedIn.value) {
-          return { name: "Settings" };
-        }
-      },
-    },
+    // {
+    //   path: "/limit",
+    //   name: "Limit",
+    //   component: LimitView,
+    //   meta: { requiresAuth: false },
+    //   beforeEnter: (to, from) => {
+    //     const { isLoggedIn } = storeToRefs(useUserStore());
+    //     if (isLoggedIn.value) {
+    //       return { name: "Limit" };
+    //     }
+    //   },
+    // },
+    // {
+    //   path: "/cannotLogin",
+    //   name: "CannotLogin",
+    //   component: CannotLoginView,
+    //   meta: { requiresAuth: false },
+    //   beforeEnter: (to, from) => {
+    //     const { isLoggedIn } = storeToRefs(useUserStore());
+    //     if (isLoggedIn.value) {
+    //       return { name: "CannotLogin" };
+    //     }
+    //   },
+    // },
     {
       path: "/:catchAll(.*)",
       name: "not-found",

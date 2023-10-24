@@ -1,6 +1,9 @@
 <script setup lang="ts">
-import { useUserStore } from "@/stores/user";
-import { storeToRefs } from "pinia";
-
-const { currentUsername, isLoggedIn } = storeToRefs(useUserStore());
+import CreateLimit from "@/components/Limit/CreateLimit.vue";
 </script>
+
+<template>
+  <main>
+    <CreateLimit />
+  </main>
+</template>

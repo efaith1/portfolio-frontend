@@ -1,23 +1,9 @@
 <script setup lang="ts">
-// import { onMounted, ref } from "vue";
-// import { fetchy } from "../../utils/fetchy";
+import { onMounted } from "vue";
 
-// const username = ref(""); // Assuming you have the username of the user
+const getReactedPosts = async () => {};
 
-// const reactedPosts = ref([]);
-
-// const getReactedPosts = async () => {
-//   try {
-//     const response = await fetchy(`/reactions/${username.value}`, "GET");
-//     // if (response && Array.isArray(response)) {
-//     //   reactedPosts.value = response;
-//     // }
-//   } catch (error) {
-//     console.error("Error fetching reacted posts:", error);
-//   }
-// };
-
-// onMounted(async () => {
-//   await getReactedPosts();
-// });
+onMounted(async () => {
+  await getReactedPosts();
+});
 </script>

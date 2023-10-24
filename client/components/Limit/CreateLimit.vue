@@ -13,18 +13,13 @@ const createLimit = async (content: number, type: string) => {
   } catch (_) {
     return;
   }
-  emptyForm();
-};
-
-const emptyForm = () => {
-  content.value = "";
 };
 </script>
 
 <template>
   <h2>Set your daily app usage limit.</h2>
   <form @submit.prevent="createLimit(content, type)">
-    <select id="select" v-model="selectedValue" placeholder="Please Select" required>
+    <select id="select" placeholder="Please Select" required>
       <option value="" disabled>Please Select</option>
       <option v-for="i in 5" :key="i" :value="i">{{ i }}</option>
     </select>

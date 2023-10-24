@@ -6,15 +6,13 @@ const loaded = ref(false);
 let notifications = ref<Array<Record<string, string>>>([]);
 let notifRecipient = ref("");
 
-async function getRead(recipient?: string) {
-  let query: Record<string, string> = recipient !== undefined ? { recipient } : {};
+async function getRead() {
   let readResults;
   try {
-    readResults = await fetchy("/api/notifications/read", "GET", { query });
+    readResults = await fetchy("/api/notifications/read", "GET");
   } catch (_) {
     return;
   }
-  notifRecipient.value = recipient ? recipient : "";
   notifications.value = readResults;
 }
 
@@ -26,8 +24,7 @@ onBeforeMount(async () => {
 
 <template>
   <div class="row">
-    <h2 v-if="!notifRecipient">No author to listRead:</h2>
-    <button v-else class="button-error btn-small pure-button" @click="getRead(notifRecipient)">List Read Notifications</button>
+    <button class="pure-button-primary pure-button" @click="getRead()">List Read Notifications</button>
   </div>
 </template>
 

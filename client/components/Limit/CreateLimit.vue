@@ -2,13 +2,13 @@
 import { ref } from "vue";
 import { fetchy } from "../../utils/fetchy";
 
-const content = ref(0);
+const limit = ref(0);
 const type = ref("");
 
-const createLimit = async (content: number, type: string) => {
+const createLimit = async (limit: number, type: string) => {
   try {
     await fetchy("/api/limits/resource", "POST", {
-      body: { content, type },
+      body: { limit, type },
     });
   } catch (_) {
     return;
@@ -18,17 +18,14 @@ const createLimit = async (content: number, type: string) => {
 
 <template>
   <h2>Set your daily app usage limit.</h2>
-  <form @submit.prevent="createLimit(content, type)">
+  <form @submit.prevent="createLimit(limit, type)">
     <select id="select" placeholder="Please Select" required>
       <option value="" disabled>Please Select</option>
       <option v-for="i in 5" :key="i" :value="i">{{ i }}</option>
     </select>
 
     <h2>Your daily reaction limit (upvote and downvote combined) is preset to: 20</h2>
-
-    <form>
-      <label> <input type="checkbox" name="accept" required /> I understand that I can change this limit in the settings page </label>
-    </form>
+    <label> <input type="checkbox" name="accept" required /> I understand that I can change this limit in the settings page </label>
     <button type="submit" class="pure-button-primary pure-button">Create Limit</button>
   </form>
 </template>

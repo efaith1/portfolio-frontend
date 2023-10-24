@@ -4,18 +4,15 @@ import { fetchy } from "../../utils/fetchy";
 
 const loaded = ref(false);
 let notifications = ref<Array<Record<string, string>>>([]);
-let searchRecipient = ref("");
 
-async function getUnread(recipient?: string) {
-  let query: Record<string, string> = recipient !== undefined ? { recipient } : {};
-  let unreadResults;
+async function getUnread() {
+  let notificationsResults;
   try {
-    unreadResults = await fetchy("/api/notifications/unread", "GET", { query });
+    notificationsResults = await fetchy("/api/notifications/unread", "GET");
   } catch (_) {
     return;
   }
-  searchRecipient.value = recipient ? recipient : "";
-  notifications.value = unreadResults;
+  notifications.value = notificationsResults;
 }
 
 onBeforeMount(async () => {
@@ -26,8 +23,7 @@ onBeforeMount(async () => {
 
 <template>
   <div class="row">
-    <h2 v-if="!searchRecipient">No author to listUnread:</h2>
-    <button v-else class="button-error btn-small pure-button" @click="getUnread(searchRecipient)">List Unread Notifications</button>
+    <button class="pure-button-primary pure-button" @click="getUnread()">List Unread Notifications</button>
   </div>
 </template>
 

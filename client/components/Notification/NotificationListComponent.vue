@@ -16,21 +16,17 @@ import { onBeforeMount, ref } from "vue";
 const { isLoggedIn } = storeToRefs(useUserStore());
 const loaded = ref(false);
 let notifications = ref<Array<Record<string, string>>>([]);
-let searchRecipient = ref("");
 
-async function getNotifications(author?: string) {
-  let query: Record<string, string> = author !== undefined ? { author } : {};
+async function getNotifications() {
   let notificationsResults;
   try {
-    notificationsResults = await fetchy("/api/notifications/all", "GET", { query });
+    notificationsResults = await fetchy("/api/notifications/all", "GET");
   } catch (_) {
     console.error("error loading notifications", _);
     return;
   }
-  searchRecipient.value = author ? author : ""; // we are having trouble here
-  console.log("THIS IS THE RECIPIENT", searchRecipient);
   notifications.value = notificationsResults;
-  console.log(notifications);
+  console.log("in notif listtttt", notifications);
 }
 
 onBeforeMount(async () => {
@@ -46,19 +42,19 @@ onBeforeMount(async () => {
       <ListUnread />
       <SubscribeNotifications />
       <UnsubscribeNotifications />
-      <ClearNotifications />
+      <ClearNotifications @clearNotifications="getNotifications()" />
     </article>
   </section>
   <section v-if="isLoggedIn">
     <h2>Create a notification:</h2>
-    <CreateNotification @refreshNotifications="getNotifications(searchRecipient)" />
+    <CreateNotification @refreshNotifications="getNotifications()" />
   </section>
   <!-- TODO should look into making this entire thing only if is logged in -->
   <section class="notifications" v-if="loaded && notifications.length !== 0">
     <article v-for="notification in notifications" :key="notification._id">
       <MarkRead :notification="notification" />
       <MarkUnread :notification="notification" />
-      <DeleteNotification :notification="notification" @refreshNotifications="getNotifications(searchRecipient)" />
+      <DeleteNotification :notification="notification" @refreshNotifications="getNotifications()" />
     </article>
   </section>
   <p v-else-if="loaded">No notifications found</p>

@@ -305,49 +305,32 @@ class Routes {
   }
 
   @Router.get("/notifications/read")
-  async getReadNotifications(recipient?: string) {
-    if (recipient) {
-      const id = (await User.getUserByUsername(recipient))._id;
-      return await Notification.getRead(id);
-    } else {
-      return { msg: "Could not get read" };
-    }
+  async getReadNotifications(session: WebSessionDoc) {
+    const user = WebSession.getUser(session);
+    return await Notification.getRead(user);
   }
 
   @Router.get("/notifications/unread")
-  async getUnreadNotifications(recipient?: string) {
-    if (recipient) {
-      const id = (await User.getUserByUsername(recipient))._id;
-      return await Notification.getUnread(id);
-    } else {
-      return { msg: "Could not get unread" };
-    }
+  async getUnreadNotifications(session: WebSessionDoc) {
+    const user = WebSession.getUser(session);
+    return await Notification.getUnread(user);
   }
 
   @Router.get("/notifications/all")
-  async getAll(recipient?: string) {
-    if (recipient) {
-      const id = (await User.getUserByUsername(recipient))._id;
-      return await Notification.getAll(id);
-    } else {
-      return { msg: "Could not get all of user's notifications" };
+  async getAll(session: WebSessionDoc) {
+    const user = WebSession.getUser(session);
+    try {
+      return await Notification.getAll(user);
+    } catch (e) {
+      console.error("Trouble getting all notifications", e);
     }
   }
 
   @Router.delete("/notifications/clear")
-  async clearNotifications(recipient?: string) {
-    try {
-      if (recipient) {
-        WebSession.isLoggedIn;
-        const id = (await User.getUserByUsername(recipient))._id;
-        const result = await Notification.clearNotifications(new ObjectId(id));
-        return { msg: "Notifications cleared successfully", result };
-      } else {
-        return { msg: "Could not clear notifications" };
-      }
-    } catch (error) {
-      return { msg: "Error clearing notifications:", error };
-    }
+  async clearNotifications(session: WebSessionDoc) {
+    const user = WebSession.getUser(session);
+    const result = await Notification.clearNotifications(user);
+    return { msg: "Notifications cleared successfully", result };
   }
 
   @Router.delete("/notifications/:_notificationId")
@@ -375,33 +358,40 @@ class Routes {
   }
 
   @Router.post("/limits/resource")
-  async createLimit(receiverId: ObjectId, limit: number, type: string, options?: LimitOptions) {
-    return await Limit.setLimit(receiverId, limit, type, options);
+  async createLimit(session: WebSessionDoc, limit: number, type: string, options?: LimitOptions) {
+    const user = WebSession.getUser(session);
+
+    return await Limit.setLimit(user, limit, type, options);
   }
 
   @Router.put("/limits/resource") // need user not found and user is recipient for all limits
-  async decrementLimit(receiverId: ObjectId, limit: number, type: string) {
-    return await Limit.decrement(receiverId, limit, type);
+  async decrementLimit(session: WebSessionDoc, limit: number, type: string) {
+    const user = WebSession.getUser(session);
+    return await Limit.decrement(user, limit, type);
   }
 
   @Router.get("/limits/resource")
-  async getRemaining(receiverId: ObjectId, type: string) {
-    return await Limit.getRemaining(receiverId, type);
+  async getRemaining(session: WebSessionDoc, type: string) {
+    const user = WebSession.getUser(session);
+    return await Limit.getRemaining(user, type);
   }
 
   @Router.put("/limits/reset")
-  async resetLimit(receiverId: ObjectId, type: string) {
-    return await Limit.reset(receiverId, type);
+  async resetLimit(session: WebSessionDoc, type: string) {
+    const user = WebSession.getUser(session);
+    return await Limit.reset(user, type);
   }
 
   @Router.get("/limits/status")
-  async getStatus(receiverId: ObjectId, type: string) {
-    return await Limit.getStatus(receiverId, type);
+  async getStatus(session: WebSessionDoc, type: string) {
+    const user = WebSession.getUser(session);
+    return await Limit.getStatus(user, type);
   }
 
   @Router.get("/limits/waitime") // need user not found and user is recipient for all limits
-  async getTimeToReset(receiverId: ObjectId, type: string) {
-    return await Limit.timeUntilReset(receiverId, type);
+  async getTimeToReset(session: WebSessionDoc, type: string) {
+    const user = WebSession.getUser(session);
+    return await Limit.timeUntilReset(user, type);
   }
 }
 

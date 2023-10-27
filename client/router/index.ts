@@ -60,30 +60,6 @@ const router = createRouter({
         }
       },
     },
-    // {
-    //   path: "/limit",
-    //   name: "Limit",
-    //   component: LimitView,
-    //   meta: { requiresAuth: false },
-    //   beforeEnter: (to, from) => {
-    //     const { isLoggedIn } = storeToRefs(useUserStore());
-    //     if (isLoggedIn.value) {
-    //       return { name: "Limit" };
-    //     }
-    //   },
-    // },
-    // {
-    //   path: "/cannotLogin",
-    //   name: "CannotLogin",
-    //   component: CannotLoginView,
-    //   meta: { requiresAuth: false },
-    //   beforeEnter: (to, from) => {
-    //     const { isLoggedIn } = storeToRefs(useUserStore());
-    //     if (isLoggedIn.value) {
-    //       return { name: "CannotLogin" };
-    //     }
-    //   },
-    // },
     {
       path: "/:catchAll(.*)",
       name: "not-found",

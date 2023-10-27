@@ -3,16 +3,12 @@ import GetRemainingReaction from "@/components/Limit/GetRemainingReaction.vue";
 import TimeToResetReaction from "@/components/Limit/TimeToResetReaction.vue";
 import { fetchy } from "../../utils/fetchy";
 
-const limit: number = 0;
-
 const react = "reaction";
 const emit = defineEmits(["createLimit"]);
 
-const createLimit = async (newLimit = limit, type = react) => {
-  const newest = newLimit.toString();
+const createLimit = async (type = react) => {
   try {
-    console.log("PARAMETERRRRSSSS", newLimit);
-    await fetchy("/api/limits/resource", "POST", { query: { newest, type } });
+    await fetchy("/api/limits/resource", "POST", { query: { type } });
   } catch (_) {
     return;
   }
@@ -22,16 +18,9 @@ const createLimit = async (newLimit = limit, type = react) => {
 
 <template>
   <h2>Set your daily reaction limit.</h2>
-  <form @submit.prevent="createLimit(limit, react)">
-    <select id="select" v-model="limit" placeholder="Please Select" required>
-      <option value="" disabled>Please Select</option>
-      <option v-for="i in 30" :key="i" :value="i">{{ i }}</option>
-    </select>
-    <label> <input type="checkbox" name="accept" required /> I understand that I cannot change this limit again until 24 hours pass </label>
-    <div class="limit">
-      <button type="submit" class="pure-button-primary pure-button">Create Limit</button>
-    </div>
-  </form>
+  <div class="limit">
+    <button type="submit" class="pure-button-primary pure-button" @click="createLimit(react)">Activate Upvote Limit</button>
+  </div>
   <GetRemainingReaction />
   <TimeToResetReaction />
 </template>

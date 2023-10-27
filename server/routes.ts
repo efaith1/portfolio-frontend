@@ -100,6 +100,13 @@ class Routes {
     return Responses.posts(posts);
   }
 
+  @Router.get("/posts/mine")
+  async getMyPosts(session: WebSessionDoc) {
+    const user = WebSession.getUser(session);
+    const posts = await Post.getByAuthor(user);
+    return Responses.posts(posts);
+  }
+
   @Router.post("/posts")
   async createPost(session: WebSessionDoc, content: string, options?: PostOptions) {
     const user = WebSession.getUser(session);
@@ -220,24 +227,20 @@ class Routes {
     }
   }
 
-  @Router.get("/reactions")
-  async getPostReactionCount(target: ObjectId) {
-    return await Reaction.getReactionCount(target);
+  @Router.get("/reactions/count/:_id")
+  async getPostReactionCount(_id: ObjectId) {
+    return await Reaction.getReactionCount(_id);
   }
 
-  @Router.get("/reactions/:user")
-  async getReactions(author?: string) {
+  @Router.get("/reactions/liked")
+  async getReactions(session: WebSessionDoc) {
     // Citation: posts implementation above and gpt for debugging
     let reactions;
-    if (author) {
-      const id = (await User.getUserByUsername(author))._id;
-      reactions = await Reaction.getByAuthor(id);
-      const upvotedPostIds = reactions.map((reaction) => reaction.target);
-      const upvotedPosts = await Post.getPosts({ _id: { $in: upvotedPostIds } });
-      reactions = upvotedPosts;
-    } else {
-      reactions = await Reaction.getReactions({});
-    }
+    const user = WebSession.getUser(session);
+    reactions = await Reaction.getByAuthor(user);
+    const upvotedPostIds = reactions.map((reaction) => reaction.target);
+    const upvotedPosts = await Post.getPosts({ _id: { $in: upvotedPostIds } });
+    reactions = upvotedPosts;
     return reactions;
   }
 
@@ -320,16 +323,9 @@ class Routes {
   }
 
   @Router.post("/limits/resource")
-  async createLimit(session: WebSessionDoc, type: string, limit?: "20", options?: LimitOptions) {
+  async createLimit(session: WebSessionDoc, type: string, options?: LimitOptions) {
     const user = WebSession.getUser(session);
-    console.log("what i got", limit);
-    if (limit) {
-      if (typeof parseInt(limit) === "number") {
-        return await Limit.setLimit(user, parseInt(limit), type, options);
-      }
-    } else {
-      console.error("Not a valid number");
-    }
+    return await Limit.setLimit(user, 20, type, options);
   }
 
   @Router.put("/limits/resource")

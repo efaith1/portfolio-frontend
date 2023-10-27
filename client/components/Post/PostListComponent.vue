@@ -9,6 +9,7 @@ import { useUserStore } from "@/stores/user";
 import { fetchy } from "@/utils/fetchy";
 import { storeToRefs } from "pinia";
 import { onBeforeMount, ref } from "vue";
+import GetRemainingReaction from "../Limit/GetRemainingReaction.vue";
 import SearchPostForm from "./SearchPostForm.vue";
 
 const { isLoggedIn } = storeToRefs(useUserStore());
@@ -58,6 +59,7 @@ onBeforeMount(async () => {
       <CreateUpvote :post="post" />
       <CreateDownvote :post="post" />
       <ReactionComponent :post="post" />
+      <GetRemainingReaction />
     </article>
   </section>
   <p v-else-if="loaded">No posts found</p>

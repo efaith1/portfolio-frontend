@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import { fetchy } from "@/utils/fetchy";
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 
 const reactionCount = ref(0);
+const props = defineProps(["post"]);
 
 const getReactionCount = async () => {
   try {
-    // TODO need to somehow pass the ID. okay so this was broken too.
-    console.log("gettingractionCount");
-    const response = await fetchy("/api/reactions", "GET");
+    console.log("getting reaction Count");
+    const response = await fetchy(`/api/reactions/count/${props.post._id}`, "GET");
     if (response && response.count) {
       reactionCount.value = response.count;
       console.log("successfully counted"), reactionCount;
@@ -17,10 +17,14 @@ const getReactionCount = async () => {
     console.error("Error fetching reaction count:", error);
   }
 };
+
+onMounted(async () => {
+  await getReactionCount();
+});
 </script>
 
 <template>
-  <div class="count" @submit-prevent="getReactionCount">
+  <div class="count">
     <div>
       <p>Reaction Count: {{ reactionCount }}</p>
     </div>

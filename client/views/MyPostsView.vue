@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import GetReactions from "@/components/Reaction/GetReactions.vue";
+import MyPosts from "@/components/Post/MyPosts.vue";
 </script>
 
 <template>
   <main>
-    <GetReactions />
+    <MyPosts />
   </main>
 </template>

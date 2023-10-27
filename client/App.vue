@@ -71,7 +71,7 @@ onBeforeMount(async () => {
   max-width: 960px;
   padding: var(--m) var(--m);
   margin: auto;
-  background-image: url(../public/split.jpeg);
+  background-image: url(../split.jpeg);
   position: absolute;
   background-position: center;
   background-repeat: repeat;

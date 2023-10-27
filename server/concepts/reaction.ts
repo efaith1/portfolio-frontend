@@ -20,7 +20,7 @@ export default class ReactionConcept {
   async upvote(author: ObjectId, target: ObjectId, options?: ReactionOptions) {
     const existingReaction = await this.reactions.readOne({ author, target });
     if (existingReaction) {
-      throw new Error("User has already upvoted this post.");
+      throw new Error("You have already upvoted this post.");
     }
     const _id = await this.reactions.createOne({ author, target, options });
     return { msg: "Upvote created successfully!", reaction: await this.reactions.readOne({ _id }) };
@@ -29,7 +29,7 @@ export default class ReactionConcept {
   async downvote(author: ObjectId, target: ObjectId, options?: ReactionOptions) {
     const reaction = await this.reactions.readOne({ author: author, target: target });
     if (!reaction) {
-      throw new Error("User has not upvoted this post.");
+      throw new Error("You have not upvoted this post.");
     }
     const _id = await this.reactions.deleteOne({ author, target, options });
     return { msg: "Downvote created successfully!", reaction: await this.reactions.readOne({ _id }) };

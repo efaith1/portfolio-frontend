@@ -9,14 +9,13 @@ import { useUserStore } from "@/stores/user";
 import { fetchy } from "@/utils/fetchy";
 import { storeToRefs } from "pinia";
 import { onBeforeMount, ref } from "vue";
-import GetRemainingReaction from "../Limit/GetRemainingReaction.vue";
+// import GetRemainingReaction from "../Limit/GetRemainingReaction.vue";
 import SearchPostForm from "./SearchPostForm.vue";
 
-const { isLoggedIn } = storeToRefs(useUserStore());
+const { isLoggedIn, reactionCount, editing } = storeToRefs(useUserStore());
 
 const loaded = ref(false);
 let posts = ref<Array<Record<string, string>>>([]);
-let editing = ref("");
 let searchAuthor = ref("");
 
 async function getPosts(author?: string) {
@@ -33,6 +32,10 @@ async function getPosts(author?: string) {
 
 function updateEditing(id: string) {
   editing.value = id;
+}
+
+function updateCount(newCount: number) {
+  reactionCount.value += newCount;
 }
 
 onBeforeMount(async () => {
@@ -56,10 +59,10 @@ onBeforeMount(async () => {
     <article v-for="post in posts" :key="post._id">
       <PostComponent v-if="editing !== post._id" :post="post" @refreshPosts="getPosts" @editPost="updateEditing" />
       <EditPostForm v-else :post="post" @refreshPosts="getPosts" @editPost="updateEditing" />
-      <CreateUpvote :post="post" />
-      <CreateDownvote :post="post" />
+      <CreateUpvote :post="post" @upvote="updateCount(1)" />
+      <CreateDownvote :post="post" @downvote="updateCount(-1)" />
       <ReactionComponent :post="post" />
-      <GetRemainingReaction />
+      <!-- <GetRemainingReaction /> -->
     </article>
   </section>
   <p v-else-if="loaded">No posts found</p>

@@ -6,15 +6,11 @@ const emit = defineEmits(["downvote"]);
 
 const createDownvote = async () => {
   try {
-    console.log("Downvoteclicked");
     await fetchy(`/api/reactions/${props.post._id}`, "DELETE");
-    console.log("done downvote action");
+    emit("downvote");
   } catch (e) {
-    console.log("error fetching on downvote");
     console.error("Error creating downvote:", e);
   }
-  emit("downvote");
-  console.log("emmited downvote");
 };
 </script>
 

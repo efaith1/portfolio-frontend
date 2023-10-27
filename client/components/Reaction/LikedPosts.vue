@@ -31,8 +31,8 @@ onMounted(async () => {
   <section class="posts" v-if="loaded && liked.length !== 0">
     <article v-for="post in liked" :key="post._id">
       <PostComponent :post="post" />
-      <CreateUpvote :post="post" />
-      <CreateDownvote :post="post" />
+      <CreateUpvote :post="post" @upvote="getReactedPosts" />
+      <CreateDownvote :post="post" @downvote="getReactedPosts" />
       <ReactionComponent :post="post" />
       <GetRemainingReaction />
     </article>

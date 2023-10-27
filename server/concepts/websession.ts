@@ -75,9 +75,8 @@ export default class WebSessionConcept {
           return timeDiffInMilliseconds;
         }
       }
-      return "Could not get logout time";
     } catch (error) {
-      return error ? error : "Could not get logout time";
+      throw new Error("Error on getting time logged in " + error);
     }
   }
 }

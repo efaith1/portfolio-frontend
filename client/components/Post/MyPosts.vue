@@ -1,13 +1,19 @@
 <script setup lang="ts">
+import EditPostForm from "@/components/Post/EditPostForm.vue";
 import PostComponent from "@/components/Post/PostComponent.vue";
+import CreateDownvote from "@/components/Reaction/CreateDownvote.vue";
+import CreateUpvote from "@/components/Reaction/CreateUpvote.vue";
 import ReactionComponent from "@/components/Reaction/ReactionComponent.vue";
+import { useUserStore } from "@/stores/user";
 import { fetchy } from "@/utils/fetchy";
+import { storeToRefs } from "pinia";
 import { onMounted, ref } from "vue";
 
 const loaded = ref(false);
+const { reactionCount, editing } = storeToRefs(useUserStore());
 let mine = ref<Array<Record<string, string>>>([]);
 
-async function getReactedPosts() {
+async function getUserPosts() {
   let postResults;
   try {
     postResults = await fetchy("/api/posts/mine", "GET");
@@ -17,8 +23,16 @@ async function getReactedPosts() {
   mine.value = postResults;
 }
 
+function updateEditing(id: string) {
+  editing.value = id;
+}
+
+function updateCount(newCount: number) {
+  reactionCount.value += newCount;
+}
+
 onMounted(async () => {
-  await getReactedPosts();
+  await getUserPosts();
   loaded.value = true;
 });
 </script>
@@ -27,7 +41,10 @@ onMounted(async () => {
   <h2 class="title">My Posts.</h2>
   <section class="posts" v-if="loaded && mine.length !== 0">
     <article v-for="post in mine" :key="post._id">
-      <PostComponent :post="post" />
+      <PostComponent v-if="editing !== post._id" :post="post" @refreshPosts="getUserPosts" @editPost="updateEditing" />
+      <EditPostForm v-else :post="post" @refreshPosts="getUserPosts" @editPost="updateEditing" />
+      <CreateUpvote :post="post" @upvote="updateCount(1)" />
+      <CreateDownvote :post="post" @downvote="updateCount(-1)" />
       <ReactionComponent :post="post" />
     </article>
   </section>

@@ -60,21 +60,19 @@ class Routes {
         return { msg: `You have exceeded your time online today. Please try again in ${timeUntilReset}` };
       }
     } catch (error) {
+      WebSession.start(session, u._id);
+      await Limit.setLimit(u._id, 20, "reaction");
       await Limit.setLimit(u._id, 5 * 60 * 60 * 1000, "loginToken"); // A default of 5 hrs (in milliseconds)
-      return {
-        msg: error instanceof Error && error.message ? error.message : "You had not set a login limit. Try logging in again.",
-        remaining: (await Limit.getRemaining(u._id, "loginToken")).remaining / (60 * 60 * 1000) + " hours",
-      };
     }
   }
 
   @Router.post("/logout")
   async logOut(session: WebSessionDoc) {
+    const timeElapsed = WebSession.calculateTimeLoggedIn(session);
+    const user = WebSession.getUser(session);
     try {
-      const timeElapsed = WebSession.calculateTimeLoggedIn(session);
-      const user = WebSession.getUser(session);
-      const remaining = await Limit.getRemaining(user, "loginToken");
       if (typeof timeElapsed === "number") {
+        const remaining = await Limit.getRemaining(user, "loginToken");
         await Limit.decrement(user, Math.min(remaining.remaining, timeElapsed), "loginToken"); // decrement whichever's less to prevent errors
         WebSession.end(session);
         return {
@@ -84,7 +82,7 @@ class Routes {
         return { msg: "Error calculating time elapsed" };
       }
     } catch (error) {
-      return { msg: "Error while logging out, you refreshed the page before logging out" + error };
+      throw new Error("Error while logging out");
     }
   }
 
@@ -184,7 +182,7 @@ class Routes {
     try {
       const limit = await Limit.getRemaining(user, "reaction");
       if (limit.remaining <= 0) {
-        return { msg: `You have run out of resources. Try again in ${await Limit.timeUntilReset(user, "reaction")}` };
+        throw new Error(`You have run out of resources. Try again in ${await Limit.timeUntilReset(user, "reaction")}`);
       }
 
       const created = await Reaction.upvote(user, post, options);
@@ -197,7 +195,7 @@ class Routes {
       };
     } catch (error) {
       // await Limit.setLimit(user, 20, "reaction");
-      return { msg: "Set reaction limit first." };
+      throw new Error("" + error);
     }
   }
 
@@ -210,7 +208,7 @@ class Routes {
     try {
       const limit = await Limit.getRemaining(user, "reaction");
       if (limit.remaining <= 0) {
-        return { msg: `You have run out of resources. Try again in ${await Limit.timeUntilReset(user, "reaction")}` };
+        throw new Error(`You have run out of resources. Try again in ${await Limit.timeUntilReset(user, "reaction")}`);
       }
 
       const created = await Reaction.downvote(user, post, options);
@@ -222,8 +220,7 @@ class Routes {
         remaining: (await Limit.getRemaining(user, "reaction")).remaining,
       };
     } catch (error) {
-      // await Limit.setLimit(user, 20, "reaction");
-      return { msg: "Set reaction limit first." };
+      throw new Error("" + error);
     }
   }
 

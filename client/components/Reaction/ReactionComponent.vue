@@ -1,18 +1,17 @@
 <script setup lang="ts">
+import { useUserStore } from "@/stores/user";
 import { fetchy } from "@/utils/fetchy";
-import { onMounted, ref } from "vue";
+import { storeToRefs } from "pinia";
 
-const reactionCount = ref(0);
+import { onMounted } from "vue";
+
+const { reactionCount } = storeToRefs(useUserStore());
 const props = defineProps(["post"]);
 
 const getReactionCount = async () => {
   try {
-    console.log("getting reaction Count");
     const response = await fetchy(`/api/reactions/count/${props.post._id}`, "GET");
-    if (response && response.count) {
-      reactionCount.value = response.count;
-      console.log("successfully counted"), reactionCount;
-    }
+    reactionCount.value = response;
   } catch (error) {
     console.error("Error fetching reaction count:", error);
   }
@@ -26,7 +25,7 @@ onMounted(async () => {
 <template>
   <div class="count">
     <div>
-      <p>Reaction Count: {{ reactionCount }}</p>
+      <h4>Upvotes: {{ reactionCount }}</h4>
     </div>
   </div>
 </template>

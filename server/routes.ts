@@ -320,13 +320,15 @@ class Routes {
   }
 
   @Router.post("/limits/resource")
-  async createLimit(session: WebSessionDoc, limit: string, type: string, options?: LimitOptions) {
+  async createLimit(session: WebSessionDoc, type: string, limit?: "20", options?: LimitOptions) {
     const user = WebSession.getUser(session);
     console.log("what i got", limit);
-    try {
-      return await Limit.setLimit(user, parseInt(limit), type, options);
-    } catch (e) {
-      console.error(e);
+    if (limit) {
+      if (typeof parseInt(limit) === "number") {
+        return await Limit.setLimit(user, parseInt(limit), type, options);
+      }
+    } else {
+      console.error("Not a valid number");
     }
   }
 

@@ -189,8 +189,8 @@ class Routes {
         remaining: (await Limit.getRemaining(user, "reaction")).remaining,
       };
     } catch (error) {
-      await Limit.setLimit(user, 20, "reaction");
-      return { msg: "Limit pre-set successfully. Retry reaction." };
+      // await Limit.setLimit(user, 20, "reaction");
+      return { msg: "Set reaction limit first." };
     }
   }
 
@@ -215,8 +215,8 @@ class Routes {
         remaining: (await Limit.getRemaining(user, "reaction")).remaining,
       };
     } catch (error) {
-      await Limit.setLimit(user, 20, "reaction");
-      return { msg: "Limit pre-set successfully. Retry reaction." };
+      // await Limit.setLimit(user, 20, "reaction");
+      return { msg: "Set reaction limit first." };
     }
   }
 
@@ -320,10 +320,14 @@ class Routes {
   }
 
   @Router.post("/limits/resource")
-  async createLimit(session: WebSessionDoc, limit: number, type: string, options?: LimitOptions) {
+  async createLimit(session: WebSessionDoc, limit: string, type: string, options?: LimitOptions) {
     const user = WebSession.getUser(session);
-
-    return await Limit.setLimit(user, limit, type, options);
+    console.log("what i got", limit);
+    try {
+      return await Limit.setLimit(user, parseInt(limit), type, options);
+    } catch (e) {
+      console.error(e);
+    }
   }
 
   @Router.put("/limits/resource")

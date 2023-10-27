@@ -1,18 +1,18 @@
 <script setup lang="ts">
 import GetRemainingReaction from "@/components/Limit/GetRemainingReaction.vue";
 import TimeToResetReaction from "@/components/Limit/TimeToResetReaction.vue";
-import { ref } from "vue";
 import { fetchy } from "../../utils/fetchy";
 
-const limit = ref(0);
-const type = "reaction";
+const limit: number = 0;
+
+const react = "reaction";
 const emit = defineEmits(["createLimit"]);
 
-const createLimit = async (limit: number, type: string) => {
+const createLimit = async (newLimit = limit, type = react) => {
+  const newest = newLimit.toString();
   try {
-    await fetchy("/api/limits/resource", "POST", {
-      body: { limit, type },
-    });
+    console.log("PARAMETERRRRSSSS", newLimit);
+    await fetchy("/api/limits/resource", "POST", { query: { newest, type } });
   } catch (_) {
     return;
   }
@@ -22,18 +22,18 @@ const createLimit = async (limit: number, type: string) => {
 
 <template>
   <h2>Set your daily reaction limit.</h2>
-  <form @submit.prevent="createLimit(limit, type)">
-    <select id="select" placeholder="Please Select" required>
+  <form @submit.prevent="createLimit(limit, react)">
+    <select id="select" v-model="limit" placeholder="Please Select" required>
       <option value="" disabled>Please Select</option>
       <option v-for="i in 30" :key="i" :value="i">{{ i }}</option>
     </select>
-    <GetRemainingReaction />
-    <TimeToResetReaction :type="type" />
-    <label> <input type="checkbox" name="accept" required /> I understand that I cannot change this limit again until 24 hours pass</label>
+    <label> <input type="checkbox" name="accept" required /> I understand that I cannot change this limit again until 24 hours pass </label>
     <div class="limit">
       <button type="submit" class="pure-button-primary pure-button">Create Limit</button>
     </div>
   </form>
+  <GetRemainingReaction />
+  <TimeToResetReaction />
 </template>
 
 <style scoped>

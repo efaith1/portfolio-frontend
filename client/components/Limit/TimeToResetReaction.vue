@@ -1,25 +1,27 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { useLimitStore } from "@/stores/limit";
+import { storeToRefs } from "pinia";
 import { fetchy } from "../../utils/fetchy";
 
-const timeToreset = ref(0);
-const type = "reaction";
+const react = "reaction";
 
-const timeToReset = async (type: string) => {
+const { timeToreset } = storeToRefs(useLimitStore());
+
+const timeToReset = async (type = react) => {
   try {
     const time = await fetchy("/api/limits/waitime", "GET", {
-      body: { type },
+      query: { type },
     });
     console.log("TIME TO RESET", time);
     timeToreset.value = time;
-  } catch (_) {
-    return;
+  } catch (error) {
+    console.error("Error getting time to reset for reactions:", error);
   }
 };
 </script>
 
 <template>
-  <div class="count" @createLimit="timeToReset(type)">
+  <div class="count" @createLimit="timeToReset(react)">
     <div>
       <p>Time to Limit Reset: {{ timeToreset }}</p>
     </div>

@@ -88,38 +88,6 @@ class Routes {
     }
   }
 
-  async backgroundCheck() {
-    // Citation: gpt for debugging
-    const loggedInSessions = WebSession.getActiveSessions();
-    loggedInSessions.forEach(async (session) => {
-      try {
-        // Calculate the time elapsed since the last check
-        const timeElapsed = WebSession.calculateTimeLoggedIn(session);
-        const user = WebSession.getUser(session);
-        if (typeof timeElapsed === "number") {
-          // Decrement the time limit based on the elapsed time
-          const decremented = await Limit.decrement(user, timeElapsed, "loginToken");
-          const getRemaining = await Limit.getRemaining(user, "loginToken");
-
-          if (decremented && getRemaining.remaining <= 0) {
-            // The time limit has expired, log the user out
-            WebSession.end(session);
-            return { msg: "You have been logged out since your time elapsed" };
-          } else {
-            console.log("COMPLIANTTT");
-            return { msg: "user " + User.getUserById(user) + " is currently compliant" };
-          }
-        } else {
-          return { msg: "Error calculating time elapsed" };
-        }
-      } catch (error) {
-        console.error("Error during background check", error);
-      }
-    });
-
-    setInterval(() => this.backgroundCheck(), 3 * 60 * 1000); // check every 3 minutes
-  }
-
   @Router.get("/posts")
   async getPosts(author?: string) {
     let posts;
@@ -367,7 +335,7 @@ class Routes {
   @Router.get("/limits/resource")
   async getRemaining(session: WebSessionDoc, type: string) {
     const user = WebSession.getUser(session);
-    return await Limit.getRemaining(user, type);
+    return (await Limit.getRemaining(user, type)).remaining;
   }
 
   @Router.put("/limits/reset")

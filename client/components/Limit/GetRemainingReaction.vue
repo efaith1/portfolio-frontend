@@ -1,27 +1,33 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { useLimitStore } from "@/stores/limit";
+import { storeToRefs } from "pinia";
+import { onMounted } from "vue";
 import { fetchy } from "../../utils/fetchy";
 
-const remaining = ref(0);
-const type = "reaction";
+const react = "reaction";
+const { reactRemaining } = storeToRefs(useLimitStore());
 
-const getRemaining = async (type: string) => {
+const getRemaining = async (type = react) => {
   try {
     const rem = await fetchy("/api/limits/resource", "GET", {
-      body: { type },
+      query: { type },
     });
     console.log("REMAINING", rem);
-    remaining.value = rem;
-  } catch (_) {
-    return;
+    reactRemaining.value = rem;
+  } catch (error) {
+    console.error("Error fetching remaining reactions:", error);
   }
 };
+
+onMounted(async () => {
+  await getRemaining(react);
+});
 </script>
 
 <template>
-  <div class="count" @createLimit="getRemaining(type)">
+  <div class="count" @createLimit,upvote,downvote="getRemaining(react)">
     <div>
-      <p>Remaining Reactions: {{ remaining }}</p>
+      <p>Remaining Reactions: {{ reactRemaining }}</p>
     </div>
   </div>
 </template>

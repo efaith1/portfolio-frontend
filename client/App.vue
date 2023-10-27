@@ -67,7 +67,7 @@ onBeforeMount(async () => {
 
 nav {
   padding: 1em 2em;
-  background-color: rgb(39, 189, 119);
+  background-color: var(--base-pink);
   display: flex;
   align-items: center;
 }

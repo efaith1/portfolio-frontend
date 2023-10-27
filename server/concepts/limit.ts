@@ -27,7 +27,7 @@ export default class LimitConcept {
       existingLimit.remaining = Math.min(existingLimit.remaining, limit); // will update in the next cycle
       existingLimit.resetTime = resetTime;
       existingLimit.options = options;
-      return { msg: "Limit reset successfully to a new limit", update: await this.limits.updateOne({ _id: existingLimit._id }, existingLimit) };
+      return { msg: "Limit reset successfully!", update: await this.limits.updateOne({ _id: existingLimit._id }, existingLimit) };
     } else {
       const newLimit = {
         resource: new ObjectId(resource),
@@ -37,7 +37,7 @@ export default class LimitConcept {
         resetTime: resetTime,
         options: options,
       };
-      return { msg: "Limit successfully created!", newLimit: await this.limits.createOne(newLimit) };
+      return { msg: "Limit created successfully!", newLimit: await this.limits.createOne(newLimit) };
     }
   }
 
@@ -60,7 +60,7 @@ export default class LimitConcept {
     const existingLimit = await this.limits.readOne({ resource: new ObjectId(resource), type: type });
 
     if (!existingLimit) {
-      throw new Error("No limit set. Retry if you see a remaining parameter or set a limit");
+      throw new Error("We just set a limit, please try again!");
     }
 
     return { msg: "Got remaining resources successfully", type: type, remaining: existingLimit.remaining };

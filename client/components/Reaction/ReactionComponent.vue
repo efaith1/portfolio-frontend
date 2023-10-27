@@ -6,7 +6,7 @@ const reactionCount = ref(0);
 
 const getReactionCount = async () => {
   try {
-    // TODO need to somehow pass the ID
+    // TODO need to somehow pass the ID. okay so this was broken too.
     console.log("gettingractionCount");
     const response = await fetchy("/api/reactions", "GET");
     if (response && response.count) {

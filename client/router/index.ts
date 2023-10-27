@@ -2,7 +2,6 @@ import { storeToRefs } from "pinia";
 import { createRouter, createWebHistory } from "vue-router";
 
 import { useUserStore } from "@/stores/user";
-import CannotLoginView from "../views/CannotLoginView.vue";
 import HomeView from "../views/HomeView.vue";
 import LikedViewVue from "../views/LikedView.vue";
 import LimitView from "../views/LimitView.vue";
@@ -48,11 +47,6 @@ const router = createRouter({
       path: "/limit",
       name: "Limit",
       component: LimitView,
-    },
-    {
-      path: "/cannotLogin",
-      name: "CannotLogin",
-      component: CannotLoginView,
     },
     {
       path: "/login",

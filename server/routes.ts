@@ -54,7 +54,7 @@ class Routes {
       const loginToken = await Limit.getRemaining(u._id, "loginToken");
       if (loginToken.remaining > 0) {
         WebSession.start(session, u._id);
-        return { msg: "Logged in!", remaining: loginToken.remaining / (60 * 60 * 1000) + " hours" };
+        return { msg: "Logged in! Time remaining in your session:" + loginToken.remaining / (60 * 60 * 1000) + " hours" };
       } else {
         const timeUntilReset = await Limit.timeUntilReset(u._id, "loginToken");
         return { msg: `You have exceeded your time online today. Please try again in ${timeUntilReset}` };
@@ -73,18 +73,18 @@ class Routes {
     try {
       const timeElapsed = WebSession.calculateTimeLoggedIn(session);
       const user = WebSession.getUser(session);
+      const remaining = await Limit.getRemaining(user, "loginToken");
       if (typeof timeElapsed === "number") {
-        await Limit.decrement(user, timeElapsed, "loginToken");
+        await Limit.decrement(user, Math.min(remaining.remaining, timeElapsed), "loginToken"); // decrement whichever's less to prevent errors
         WebSession.end(session);
         return {
-          msg: "Logged out!",
-          remaining: (await Limit.getRemaining(user, "loginToken")).remaining / (60 * 60 * 1000) + " hours",
+          msg: "Logged out! Time remaining in your session:" + (await Limit.getRemaining(user, "loginToken")).remaining / (60 * 60 * 1000) + " hours",
         };
       } else {
         return { msg: "Error calculating time elapsed" };
       }
     } catch (error) {
-      return { msg: "Error while logging out, you refreshed the page before logging out" };
+      return { msg: "Error while logging out, you refreshed the page before logging out" + error };
     }
   }
 
@@ -222,10 +222,7 @@ class Routes {
       };
     } catch (error) {
       await Limit.setLimit(user, 20, "reaction");
-      return {
-        msg: error instanceof Error ? error.message : "You did not set a reaction limit. Try again.",
-        remaining: (await Limit.getRemaining(user, "reaction")).remaining,
-      };
+      return { msg: "Limit pre-set successfully. Retry reaction." };
     }
   }
 
@@ -251,10 +248,7 @@ class Routes {
       };
     } catch (error) {
       await Limit.setLimit(user, 20, "reaction");
-      return {
-        msg: error instanceof Error ? error.message : "You did not set a reaction limit. Try again.",
-        remaining: (await Limit.getRemaining(user, "reaction")).remaining,
-      };
+      return { msg: "Limit pre-set successfully. Retry reaction." };
     }
   }
 
@@ -364,7 +358,7 @@ class Routes {
     return await Limit.setLimit(user, limit, type, options);
   }
 
-  @Router.put("/limits/resource") // need user not found and user is recipient for all limits
+  @Router.put("/limits/resource")
   async decrementLimit(session: WebSessionDoc, limit: number, type: string) {
     const user = WebSession.getUser(session);
     return await Limit.decrement(user, limit, type);
@@ -388,7 +382,7 @@ class Routes {
     return await Limit.getStatus(user, type);
   }
 
-  @Router.get("/limits/waitime") // need user not found and user is recipient for all limits
+  @Router.get("/limits/waitime")
   async getTimeToReset(session: WebSessionDoc, type: string) {
     const user = WebSession.getUser(session);
     return await Limit.timeUntilReset(user, type);

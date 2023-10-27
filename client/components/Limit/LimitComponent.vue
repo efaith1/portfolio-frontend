@@ -1,9 +1,12 @@
 <script setup lang="ts">
+import GetRemainingReaction from "@/components/Limit/GetRemainingReaction.vue";
+import TimeToResetReaction from "@/components/Limit/TimeToResetReaction.vue";
 import { ref } from "vue";
 import { fetchy } from "../../utils/fetchy";
 
 const limit = ref(0);
-const type = ref("");
+const type = "reaction";
+const emit = defineEmits(["createLimit"]);
 
 const createLimit = async (limit: number, type: string) => {
   try {
@@ -13,20 +16,23 @@ const createLimit = async (limit: number, type: string) => {
   } catch (_) {
     return;
   }
+  emit("createLimit");
 };
 </script>
 
 <template>
-  <h2>Set your daily app usage limit.</h2>
+  <h2>Set your daily reaction limit.</h2>
   <form @submit.prevent="createLimit(limit, type)">
     <select id="select" placeholder="Please Select" required>
       <option value="" disabled>Please Select</option>
-      <option v-for="i in 5" :key="i" :value="i">{{ i }}</option>
+      <option v-for="i in 30" :key="i" :value="i">{{ i }}</option>
     </select>
-
-    <h2>Your daily reaction limit (upvote and downvote combined) is preset to: 20</h2>
-    <label> <input type="checkbox" name="accept" required /> I understand that I can change this limit in the settings page </label>
-    <button type="submit" class="pure-button-primary pure-button">Create Limit</button>
+    <GetRemainingReaction />
+    <TimeToResetReaction :type="type" />
+    <label> <input type="checkbox" name="accept" required /> I understand that I cannot change this limit again until 24 hours pass</label>
+    <div class="limit">
+      <button type="submit" class="pure-button-primary pure-button">Create Limit</button>
+    </div>
   </form>
 </template>
 

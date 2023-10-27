@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import CreateLimit from "@/components/Limit/CreateLimit.vue";
+import LimitComponent from "@/components/Limit/LimitComponent.vue";
 </script>
 
 <template>
   <main>
-    <CreateLimit />
+    <LimitComponent />
   </main>
 </template>

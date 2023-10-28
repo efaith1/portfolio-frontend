@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
+import { onBeforeMount, ref } from "vue";
 import { fetchy } from "../../utils/fetchy";
 import NotificationComponent from "./NotificationComponent.vue";
 
@@ -27,7 +27,7 @@ function listRead() {
     show.value = false;
   }
 }
-onMounted(async () => {
+onBeforeMount(async () => {
   await getRead();
   loaded.value = true;
 });
@@ -42,7 +42,7 @@ onMounted(async () => {
     <h2 class="title">Read Notifications</h2>
     <section class="notifications" v-if="loaded && notifications.length !== 0">
       <article v-for="notification in notifications" :key="notification._id">
-        <NotificationComponent :notification="notification" @read="getRead" />
+        <NotificationComponent :notification="notification" @read="getRead()" />
       </article>
     </section>
     <h2 v-else-if="loaded">No read notifications.</h2>

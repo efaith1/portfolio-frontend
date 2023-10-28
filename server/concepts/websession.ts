@@ -61,7 +61,7 @@ export default class WebSessionConcept {
 
   isLoggedOut(session: WebSessionDoc) {
     if (session.user !== undefined) {
-      throw new NotAllowedError("Must be logged out!");
+      throw new NotAllowedError("Log out first, or refresh page.");
     }
   }
 

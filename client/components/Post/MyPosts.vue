@@ -7,9 +7,12 @@ import ReactionComponent from "@/components/Reaction/ReactionComponent.vue";
 import { useUserStore } from "@/stores/user";
 import { fetchy } from "@/utils/fetchy";
 import { storeToRefs } from "pinia";
+import { usePostStore } from "../../stores/post";
+
 import { onMounted, ref } from "vue";
 
-const { reactionCount, editing } = storeToRefs(useUserStore());
+const { reactionCount } = storeToRefs(usePostStore());
+const { editing } = storeToRefs(useUserStore());
 const loaded = ref(false);
 let mine = ref<Array<Record<string, string>>>([]);
 

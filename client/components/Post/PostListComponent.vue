@@ -5,16 +5,16 @@ import PostComponent from "@/components/Post/PostComponent.vue";
 import CreateDownvote from "@/components/Reaction/CreateDownvote.vue";
 import CreateUpvote from "@/components/Reaction/CreateUpvote.vue";
 import ReactionComponent from "@/components/Reaction/ReactionComponent.vue";
-// import { useLimitStore } from "@/stores/limit";
 import { useUserStore } from "@/stores/user";
 import { fetchy } from "@/utils/fetchy";
 import { storeToRefs } from "pinia";
 import { onBeforeMount, ref } from "vue";
+import { usePostStore } from "../../stores/post";
 import GetRemainingReaction from "../Limit/GetRemainingReaction.vue";
 import SearchPostForm from "./SearchPostForm.vue";
 
-// const { reactRemaining } = storeToRefs(useLimitStore());
-const { isLoggedIn, reactionCount, editing, reactRemaining } = storeToRefs(useUserStore());
+const { isLoggedIn, editing, reactRemaining } = storeToRefs(useUserStore());
+const { reactionCount } = storeToRefs(usePostStore());
 
 const loaded = ref(false);
 let posts = ref<Array<Record<string, string>>>([]);
@@ -65,7 +65,7 @@ onBeforeMount(async () => {
       <PostComponent v-if="editing !== post._id" :post="post" @refreshPosts="getPosts" @editPost="updateEditing" />
       <EditPostForm v-else :post="post" @refreshPosts="getPosts" @editPost="updateEditing" />
       <div class="row">
-        <CreateUpvote :post="post" @upvote="updateRemaining(1), updateCount(1)" />
+        <CreateUpvote :post="post" @upvote="updateRemaining(1)" />
         <CreateDownvote :post="post" @downvote="updateRemaining(1), updateCount(-1)" />
         <ReactionComponent :post="post" />
         <GetRemainingReaction />

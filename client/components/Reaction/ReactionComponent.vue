@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { useUserStore } from "@/stores/user";
+import { usePostStore } from "@/stores/post";
 import { fetchy } from "@/utils/fetchy";
 import { storeToRefs } from "pinia";
 
 import { onMounted } from "vue";
 
-const { reactionCount } = storeToRefs(useUserStore());
+const { reactionCount } = storeToRefs(usePostStore());
 const props = defineProps(["post"]);
 
 const getReactionCount = async () => {

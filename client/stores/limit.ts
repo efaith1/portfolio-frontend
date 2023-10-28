@@ -4,14 +4,14 @@ import { ref } from "vue";
 export const useLimitStore = defineStore(
   "limit",
   () => {
-    const sessionRemaining = ref(0);
+    const remaining = ref(0);
 
     const setRemaining = async (value: number) => {
-      sessionRemaining.value = value;
+      remaining.value = value;
     };
 
     return {
-      sessionRemaining,
+      remaining,
       setRemaining,
     };
   },

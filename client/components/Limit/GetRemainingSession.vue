@@ -5,7 +5,7 @@ import { onMounted } from "vue";
 import { fetchy } from "../../utils/fetchy";
 
 const token = "loginToken";
-const { sessionRemaining } = storeToRefs(useLimitStore());
+const { remaining } = storeToRefs(useLimitStore());
 const { setRemaining } = useLimitStore();
 
 const getRemaining = async (type = token) => {
@@ -20,7 +20,7 @@ const getRemaining = async (type = token) => {
 };
 
 const updateRemainingTime = async () => {
-  await setRemaining(sessionRemaining.value - 60000);
+  await setRemaining(remaining.value - 60000);
 };
 
 onMounted(async () => {
@@ -38,7 +38,7 @@ function convertMillisecondsToTime(durationInMilliseconds: number) {
 <template>
   <div>
     <main>
-      <h2 class="count">Time Remaining: {{ convertMillisecondsToTime(sessionRemaining) }}</h2>
+      <h2 class="count">Time Remaining: {{ convertMillisecondsToTime(remaining) }}</h2>
     </main>
   </div>
 </template>

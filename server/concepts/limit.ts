@@ -60,7 +60,7 @@ export default class LimitConcept {
     const existingLimit = await this.limits.readOne({ resource: new ObjectId(resource), type: type });
 
     if (!existingLimit) {
-      throw new Error("Error getting remaining resources");
+      throw new Error("fetching remaining resources");
     }
 
     return { msg: "Got remaining resources successfully", type: type, remaining: existingLimit.remaining };

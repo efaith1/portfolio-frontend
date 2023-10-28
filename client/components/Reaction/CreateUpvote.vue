@@ -1,12 +1,17 @@
 <script setup lang="ts">
-import { fetchy } from "../../utils/fetchy";
+import { usePostStore } from "@/stores/post";
+import { fetchy } from "@/utils/fetchy";
 
+const { setInitialCount, incrementCount } = usePostStore();
 const props = defineProps(["post"]);
 const emit = defineEmits(["upvote"]);
+
+setInitialCount(props.post.initialReactionCount);
 
 const createUpvote = async () => {
   try {
     await fetchy(`/api/reactions/${props.post._id}`, "POST");
+    incrementCount();
     emit("upvote");
   } catch (e) {
     console.error("Error creating upvote:", e);

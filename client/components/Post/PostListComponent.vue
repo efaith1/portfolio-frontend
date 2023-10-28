@@ -5,14 +5,16 @@ import PostComponent from "@/components/Post/PostComponent.vue";
 import CreateDownvote from "@/components/Reaction/CreateDownvote.vue";
 import CreateUpvote from "@/components/Reaction/CreateUpvote.vue";
 import ReactionComponent from "@/components/Reaction/ReactionComponent.vue";
+// import { useLimitStore } from "@/stores/limit";
 import { useUserStore } from "@/stores/user";
 import { fetchy } from "@/utils/fetchy";
 import { storeToRefs } from "pinia";
 import { onBeforeMount, ref } from "vue";
-// import GetRemainingReaction from "../Limit/GetRemainingReaction.vue";
+import GetRemainingReaction from "../Limit/GetRemainingReaction.vue";
 import SearchPostForm from "./SearchPostForm.vue";
 
-const { isLoggedIn, reactionCount, editing } = storeToRefs(useUserStore());
+// const { reactRemaining } = storeToRefs(useLimitStore());
+const { isLoggedIn, reactionCount, editing, reactRemaining } = storeToRefs(useUserStore());
 
 const loaded = ref(false);
 let posts = ref<Array<Record<string, string>>>([]);
@@ -38,6 +40,10 @@ function updateCount(newCount: number) {
   reactionCount.value += newCount;
 }
 
+function updateRemaining(newCount: number) {
+  reactRemaining.value -= newCount;
+}
+
 onBeforeMount(async () => {
   await getPosts();
   loaded.value = true;
@@ -54,16 +60,15 @@ onBeforeMount(async () => {
     <h2 v-else>Posts by {{ searchAuthor }}:</h2>
     <SearchPostForm @getPostsByAuthor="getPosts" />
   </div>
-  <!-- TODO should look into making this entire thing only if is logged in -->
   <section class="posts" v-if="loaded && posts.length !== 0">
     <article class="container" v-for="post in posts" :key="post._id">
       <PostComponent v-if="editing !== post._id" :post="post" @refreshPosts="getPosts" @editPost="updateEditing" />
       <EditPostForm v-else :post="post" @refreshPosts="getPosts" @editPost="updateEditing" />
       <div class="row">
-        <CreateUpvote :post="post" @upvote="updateCount(1)" />
-        <CreateDownvote :post="post" @downvote="updateCount(-1)" />
+        <CreateUpvote :post="post" @upvote="updateRemaining(1), updateCount(1)" />
+        <CreateDownvote :post="post" @downvote="updateRemaining(1), updateCount(-1)" />
         <ReactionComponent :post="post" />
-        <!-- <GetRemainingReaction /> -->
+        <GetRemainingReaction />
       </div>
     </article>
   </section>

@@ -9,6 +9,7 @@ export const useUserStore = defineStore(
     const currentUsername = ref("");
     const reactionCount = ref(0);
     const editing = ref("");
+    const reactRemaining = ref(0);
 
     const isLoggedIn = computed(() => currentUsername.value !== "");
 
@@ -56,6 +57,7 @@ export const useUserStore = defineStore(
       isLoggedIn,
       reactionCount,
       editing,
+      reactRemaining,
       createUser,
       loginUser,
       updateSession,

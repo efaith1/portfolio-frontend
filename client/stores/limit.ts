@@ -6,7 +6,6 @@ export const useLimitStore = defineStore(
   () => {
     const remaining = ref(0);
     const timeUntilReset = ref(0);
-    const reactRemaining = ref(0);
     const timeToreset = ref(0);
 
     const setRemaining = async (value: number) => {
@@ -16,7 +15,6 @@ export const useLimitStore = defineStore(
     return {
       remaining,
       timeUntilReset,
-      reactRemaining,
       timeToreset,
       setRemaining,
     };

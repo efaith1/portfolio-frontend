@@ -9,8 +9,8 @@ import { fetchy } from "@/utils/fetchy";
 import { storeToRefs } from "pinia";
 import { onMounted, ref } from "vue";
 
-const loaded = ref(false);
 const { reactionCount, editing } = storeToRefs(useUserStore());
+const loaded = ref(false);
 let mine = ref<Array<Record<string, string>>>([]);
 
 async function getUserPosts() {

@@ -281,11 +281,7 @@ class Routes {
   @Router.get("/notifications/all")
   async getAll(session: WebSessionDoc) {
     const user = WebSession.getUser(session);
-    try {
-      return await Notification.getAll(user);
-    } catch (e) {
-      console.error("Trouble getting all notifications", e);
-    }
+    return await Notification.getAll(user);
   }
 
   @Router.delete("/notifications/clear")
@@ -303,7 +299,7 @@ class Routes {
       const result = await Notification.deleteNotification(_notificationId);
       return { msg: "Notification deleted successfully", result };
     } catch (error) {
-      return { msg: "Error deleting notification", error };
+      throw new Error("Error deleting notification");
     }
   }
 

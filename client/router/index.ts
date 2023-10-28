@@ -4,7 +4,6 @@ import { createRouter, createWebHistory } from "vue-router";
 import { useUserStore } from "@/stores/user";
 import HomeView from "../views/HomeView.vue";
 import LikedViewVue from "../views/LikedView.vue";
-import LimitView from "../views/LimitView.vue";
 import LoginView from "../views/LoginView.vue";
 import MyPostsViewVue from "../views/MyPostsView.vue";
 import NotFoundView from "../views/NotFoundView.vue";
@@ -42,11 +41,6 @@ const router = createRouter({
       name: "Notifications",
       component: NotificationViewVue,
       meta: { requiresAuth: true },
-    },
-    {
-      path: "/limit",
-      name: "Limit",
-      component: LimitView,
     },
     {
       path: "/login",

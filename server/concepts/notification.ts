@@ -113,7 +113,7 @@ export default class NotificationConcept {
   async isRecipient(user: ObjectId, _notificationId: ObjectId) {
     const notification = await this.notifications.readOne({ _id: _notificationId });
     if (notification === null) {
-      throw new NotFoundError(`notification ${_notificationId} does not exist!`);
+      throw new NotFoundError(`notification does not exist!`);
     }
     if (notification.recipient.toString() !== user.toString()) {
       throw new NotificationAuthorNotMatchError(user, _notificationId);

@@ -2,6 +2,7 @@
 import { fetchy } from "../../utils/fetchy";
 
 const props = defineProps(["notification"]);
+const emit = defineEmits(["unread"]);
 
 const markUnread = async () => {
   try {
@@ -9,6 +10,7 @@ const markUnread = async () => {
   } catch (_) {
     return;
   }
+  emit("unread");
 };
 </script>
 

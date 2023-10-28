@@ -42,7 +42,7 @@ onMounted(async () => {
   <div v-if="show">
     <h2 class="title">Unread Notifications</h2>
     <section class="notifications" v-if="loaded && notifications.length !== 0">
-      <article v-for="notification in notifications" :key="notification._id">
+      <article class="one" v-for="notification in notifications" :key="notification._id">
         <NotificationComponent :notification="notification" @unread="getUnread" />
       </article>
     </section>
@@ -55,5 +55,9 @@ onMounted(async () => {
 .row {
   margin: 0 auto;
   max-width: 60em;
+}
+
+.one {
+  padding-bottom: 15px;
 }
 </style>

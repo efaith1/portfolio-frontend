@@ -56,13 +56,15 @@ onBeforeMount(async () => {
   </div>
   <!-- TODO should look into making this entire thing only if is logged in -->
   <section class="posts" v-if="loaded && posts.length !== 0">
-    <article v-for="post in posts" :key="post._id">
+    <article class="container" v-for="post in posts" :key="post._id">
       <PostComponent v-if="editing !== post._id" :post="post" @refreshPosts="getPosts" @editPost="updateEditing" />
       <EditPostForm v-else :post="post" @refreshPosts="getPosts" @editPost="updateEditing" />
-      <CreateUpvote :post="post" @upvote="updateCount(1)" />
-      <CreateDownvote :post="post" @downvote="updateCount(-1)" />
-      <ReactionComponent :post="post" />
-      <!-- <GetRemainingReaction /> -->
+      <div class="row">
+        <CreateUpvote :post="post" @upvote="updateCount(1)" />
+        <CreateDownvote :post="post" @downvote="updateCount(-1)" />
+        <ReactionComponent :post="post" />
+        <!-- <GetRemainingReaction /> -->
+      </div>
     </article>
   </section>
   <p v-else-if="loaded">No posts found</p>
@@ -83,13 +85,39 @@ p,
   max-width: 60em;
 }
 
-article {
-  background-color: var(--base-bg);
-  border-radius: 1em;
+.row {
   display: flex;
-  flex-direction: column;
-  gap: 0.5em;
-  padding: 1em;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+}
+.container {
+  background-color: var(--base-bg);
+  border: 1px solid #ddd;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  margin: 20px 0;
+  border-radius: 8px;
+  transition:
+    transform 0.2s,
+    box-shadow 0.2s;
+
+  transition:
+    transform 0.2s,
+    box-shadow 0.2s;
+}
+
+.container:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.container h2 {
+  color: #333;
+}
+
+.container a {
+  color: #007bff;
 }
 
 .posts {
@@ -98,7 +126,7 @@ article {
 
 .row {
   display: flex;
-  justify-content: space-between;
+  justify-content: right;
   margin: 0 auto;
   max-width: 60em;
 }

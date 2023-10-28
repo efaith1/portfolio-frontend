@@ -33,22 +33,28 @@ onMounted(async () => {
 
 <template>
   <section v-if="isLoggedIn">
-    <h2>Create a notification:</h2>
+    <h2 class="top">Create a notification:</h2>
     <CreateNotification @refreshNotifications="getNotifications" />
   </section>
 
   <section>
-    <h2>Available Actions</h2>
+    <h2 class="top">Available Actions</h2>
     <article>
       <ListUnread />
-      <ListRead />
-      <SubscribeNotifications />
-      <UnsubscribeNotifications />
-      <!-- <ClearNotifications @clearNotifications="getNotifications" /> -->
     </article>
+    <article>
+      <ListRead />
+    </article>
+    <article>
+      <SubscribeNotifications />
+    </article>
+    <article>
+      <UnsubscribeNotifications />
+    </article>
+    <!-- <ClearNotifications @clearNotifications="getNotifications" /> -->
   </section>
 
-  <h2>Notifications</h2>
+  <h2 class="top">Notifications</h2>
   <section class="notifications" v-if="loaded && notifications.length !== 0">
     <article v-for="notification in notifications" :key="notification._id">
       <NotificationComponent :notification="notification" />
@@ -59,6 +65,9 @@ onMounted(async () => {
 </template>
 
 <style scoped>
+.top {
+  text-align: center;
+}
 section {
   display: flex;
   flex-direction: column;
@@ -72,6 +81,7 @@ article {
   flex-direction: column;
   gap: 0.5em;
   padding: 1em;
+  margin: 2em;
 }
 
 .notifications {

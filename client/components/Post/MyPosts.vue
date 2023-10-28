@@ -40,12 +40,14 @@ onMounted(async () => {
 <template>
   <h2 class="title">My Posts.</h2>
   <section class="posts" v-if="loaded && mine.length !== 0">
-    <article v-for="post in mine" :key="post._id">
+    <article class="container" v-for="post in mine" :key="post._id">
       <PostComponent v-if="editing !== post._id" :post="post" @refreshPosts="getUserPosts" @editPost="updateEditing" />
       <EditPostForm v-else :post="post" @refreshPosts="getUserPosts" @editPost="updateEditing" />
-      <CreateUpvote :post="post" @upvote="updateCount(1)" />
-      <CreateDownvote :post="post" @downvote="updateCount(-1)" />
-      <ReactionComponent :post="post" />
+      <div class="row">
+        <CreateUpvote :post="post" @upvote="updateCount(1)" />
+        <CreateDownvote :post="post" @downvote="updateCount(-1)" />
+        <ReactionComponent :post="post" />
+      </div>
     </article>
   </section>
   <h2 class="noPost" v-else-if="loaded">You have not posted yet.</h2>
@@ -91,5 +93,51 @@ article {
   justify-content: space-between;
   margin: 0 auto;
   max-width: 60em;
+
+  .row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+  }
+  .container {
+    background-color: var(--base-bg);
+    border: 1px solid #ddd;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin: 20px 0;
+    border-radius: 8px;
+    transition:
+      transform 0.2s,
+      box-shadow 0.2s;
+
+    transition:
+      transform 0.2s,
+      box-shadow 0.2s;
+  }
+
+  .container:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+
+  .container h2 {
+    color: #333;
+  }
+
+  .container a {
+    color: #007bff;
+  }
+
+  .posts {
+    padding: 1em;
+  }
+
+  .row {
+    display: flex;
+    justify-content: right;
+    margin: 0 auto;
+    max-width: 60em;
+  }
 }
 </style>

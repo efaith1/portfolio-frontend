@@ -38,6 +38,8 @@ form {
   flex-direction: column;
   gap: 0.5em;
   padding: 1em;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin: 2em;
 }
 
 textarea {
